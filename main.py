@@ -110,7 +110,7 @@ class MyGame(arcade.Window):
             coin.center_y = 96
             self.scene.add_sprite("Coins", coin)
         
-        # Setuo the GUI Camera
+        # Setup the GUI Camera
         self.gui_camera = arcade.Camera(self.width, self.height)
         
         # Score tracking
@@ -137,12 +137,11 @@ class MyGame(arcade.Window):
         arcade.draw_text(
             score_text,
             10,
-            10,
+            600,
             arcade.csscolor.WHITE,
             18, 
         )
-        
-               
+                      
     # key down and key up event handlers       
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
