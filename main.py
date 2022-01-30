@@ -19,6 +19,8 @@ TITLE_SCALING = 0.5
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
 
+# Add Coins and sound
+COIN_SCALING = 0.5
 
 class MyGame(arcade.Window):
     """
@@ -41,6 +43,10 @@ class MyGame(arcade.Window):
                 
         # Our physics engine
         self.physics_engine = None
+        
+        # Load sounds
+        self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
+        self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
         
         # Color for background
         arcade.set_background_color(arcade.color.EBONY)
@@ -90,6 +96,13 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.player_sprite, gravity_constant=GRAVITY, walls=self.scene["Walls"]
         )
+        
+        # Loop to place coins for character interaction
+        for x in range(128, 1250, 256):
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", COIN_SCALING)
+            coin.center_x = x 
+            coin.center_y = 96
+            self.scene.add_sprite("Coins", coin)
 
     def on_draw(self):
         """Render the screen"""
@@ -110,7 +123,8 @@ class MyGame(arcade.Window):
         if key == arcade.key.UP or key == arcade.key.W:
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
-        
+                arcade.play_sound(self.jump_sound)
+                
         elif key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
             
@@ -122,13 +136,16 @@ class MyGame(arcade.Window):
 
         if key == arcade.key.UP or key == arcade.key.W:
             self.player_sprite.change_y = 0
+            
         elif key == arcade.key.DOWN or key == arcade.key.S:
             self.player_sprite.change_y = 0
+            
         elif key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = 0
+            
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = 0
-
+    
     # Center camera to player
     def center_camera_to_player(self):
         screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
@@ -152,6 +169,18 @@ class MyGame(arcade.Window):
         
         # Position the camera
         self.center_camera_to_player()
+        
+        # Coin collision detection
+        coin_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.scene["Coins"]
+        )
+        
+        # Loop through each coin, if we hit any remove it
+        for coin in coin_hit_list:
+            # Remove coin
+            coin.remove_from_sprite_lists()
+            # Play a sound
+            arcade.play_sound(self.collect_coin_sound)
 
 
 def main():
