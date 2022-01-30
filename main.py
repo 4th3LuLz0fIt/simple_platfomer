@@ -15,6 +15,10 @@ PLAYER_MOVEMENT_SPEED = 5
 CHARACTER_SCALING = 1
 TITLE_SCALING = 0.5
 
+# Constant for gravity and jump speed
+GRAVITY = 1
+PLAYER_JUMP_SPEED = 20
+
 
 class MyGame(arcade.Window):
     """
@@ -33,6 +37,9 @@ class MyGame(arcade.Window):
 
         # Our physics engine
         self.physics_engine = None
+        
+        # Camera for scrolling the screen
+        
 
         # Color for background
         arcade.set_background_color(arcade.color.EBONY)
@@ -75,8 +82,8 @@ class MyGame(arcade.Window):
             self.scene.add_sprite("Walls", wall)
 
         # Create the physics engine
-        self.physics_engine = arcade.PhysicsEngineSimple(
-            self.player_sprite, self.scene.get_sprite_list("Walls")
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.player_sprite, gravity_constant=GRAVITY, walls=self.scene["Walls"]
         )
 
     def on_draw(self):
@@ -87,12 +94,14 @@ class MyGame(arcade.Window):
 
         # Code to draw the sprites here
         self.scene.draw()
-
+        
+    # key down and key up event handlers       
     def on_key_press_draw(self, key, modifiers):
         """Called whenever a key is pressed."""
 
         if key == arcade.key.UP or key == arcade.key.W:
-            self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
+            if self.physics_engine.can_jump:
+                self.player_sprite.change_y = PLAYER_JUMP_SPEED
         elif key == arcade.key.DOWN or key == arcade.key.S:
             self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
         elif key == arcade.key.LEFT or key == arcade.key.A:
