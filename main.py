@@ -48,6 +48,12 @@ class MyGame(arcade.Window):
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
         
+        # Camera used to draw GUI elements
+        self.gui_camera =None
+        
+        # Score tracking
+        self.score = 0
+        
         # Color for background
         arcade.set_background_color(arcade.color.EBONY)
 
@@ -103,7 +109,14 @@ class MyGame(arcade.Window):
             coin.center_x = x 
             coin.center_y = 96
             self.scene.add_sprite("Coins", coin)
-
+        
+        # Setuo the GUI Camera
+        self.gui_camera = arcade.Camera(self.width, self.height)
+        
+        # Score tracking
+        self.score = 0
+        
+    # on_draw    
     def on_draw(self):
         """Render the screen"""
 
@@ -115,6 +128,20 @@ class MyGame(arcade.Window):
         
         # Code to draw the sprites here
         self.scene.draw()
+        
+        # Activate GUI before drawing GUI elements
+        self.gui_camera.use()
+        
+        # Draw score to screen, scrolling w/viewport
+        score_text = f"Score:{self.score}"
+        arcade.draw_text(
+            score_text,
+            10,
+            10,
+            arcade.csscolor.WHITE,
+            18, 
+        )
+        
                
     # key down and key up event handlers       
     def on_key_press(self, key, modifiers):
@@ -181,6 +208,8 @@ class MyGame(arcade.Window):
             coin.remove_from_sprite_lists()
             # Play a sound
             arcade.play_sound(self.collect_coin_sound)
+            # Add one to the score
+            self.score += 1
 
 
 def main():
