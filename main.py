@@ -65,6 +65,7 @@ class MyGame(arcade.Window):
 
         # Setup Camera
         self.camera = arcade.Camera(self.width, self.height)
+        self.gui_camera = arcade.Camera(self.width, self.height)
 
         # Name of map file to load
         map_name = ":resources:tiled_maps/map.json"
@@ -85,15 +86,17 @@ class MyGame(arcade.Window):
         # from the map as SpriteLists in the scene in the proper order.
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
+        # keep track of score
+        self.score = 0
+
         # Initialize Scene
         #self.scene = arcade.Scene()
 
         # Create sprite list here
-        self.scene.add_sprite_list("Player")
-        self.scene.add_sprite_list("Walls", use_spatial_hash=True)
+        #self.scene.add_sprite_list("Player")
+        #self.scene.add_sprite_list("Walls", use_spatial_hash=True)
 
-        # keep track of score
-        self.score = 0
+
 
         # Set up the player, placing at its coordinates
         image_source = ":resources:images/animated_characters/female_Adventurer/femaleAdventurer_idle.png"
@@ -114,7 +117,7 @@ class MyGame(arcade.Window):
 
         # create the ground
         # shows using loop to place multiple sprites horizontally
-        for x in range(0, 1250, 64):
+        """for x in range(0, 1250, 64):
             wall = arcade.Sprite(":resources:images/tiles/grassMid.png", TILE_SCALING)
             wall.center_x = x
             wall.center_y = 32
@@ -144,11 +147,8 @@ class MyGame(arcade.Window):
             coin.center_y = 96
             self.scene.add_sprite("Coins", coin)
 
-        # Setup the GUI Camera
-        self.gui_camera = arcade.Camera(self.width, self.height)
-
         # Score tracking
-        self.score = 0
+        self.score = 0"""
 
     # on_draw    
     def on_draw(self):
@@ -171,7 +171,7 @@ class MyGame(arcade.Window):
         arcade.draw_text(
             score_text,
             10,
-            600,
+            10,
             arcade.csscolor.WHITE,
             18,
         )
